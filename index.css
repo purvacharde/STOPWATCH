@@ -35,3 +35,8 @@ button {
 button:hover {
     background: #4fa3d1;
 }
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
