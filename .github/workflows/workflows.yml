@@ -1,37 +1,35 @@
-name: CI/CD for HTML Project
+name: Deploy HTML to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
-    name: Run CI checks
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # ✔ Correct and latest HTML validator version
-      - name: Validate HTML5
+      - name: Validate HTML
         uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
           root: .
 
-      - name: Upload Artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+    needs: build
 
     environment:
       name: github-pages
