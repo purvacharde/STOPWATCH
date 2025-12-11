@@ -1,0 +1,54 @@
+name: CI/CD for Stopwatch Project
+
+on:
+  push:
+    branches:
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  ci:
+    name: Run CI checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+
+      - name: Validate file structure
+        run: |
+          test -f index.html
+          test -f index.css
+          test -f index.js
+        shell: bash
+
+      - name: HTML5 validation
+        uses: Cyb3r-Jak3/html5validator-action@v3
+        with:
+          root: "."
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: ci  
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./yml
+
+      - name: Deploy
+        uses: actions/deploy-pages@v2
